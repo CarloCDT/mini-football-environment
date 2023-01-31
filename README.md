@@ -1,5 +1,7 @@
 # Mini Football Environment ⚽
-Simple reinforcement learning environment made in Unity
+Simple reinforcement learning environment made in Unity:
+
+![Screenshot](img/demo.png)
 
 ## Observation Space
 The state consist on the following data points (all 3 dimansional):
