@@ -15,19 +15,22 @@ This means each time step the satte is a (batch_size, 15) array. However, the st
 
 ## Action Space
 The actions space consists on 2 continuous actions and 1 discrete action.
-- [-1,1] for horizontal movement- -1 is go left and 1 right
+- [-1,1] for horizontal movement. -1 is move left and 1 move right.
 - [-1,1] for vertical movement. -1 is go backwards and 1 move forward
 - 0: No jump, 1: jump
 
 ## Rewards
 The agent objective is to get the ball into the goal. 
- - +1.000 when the ball enters the goal. Golazo!
- - +0.050 when the ball crosses the white line. 
- - +0.010 when the player hit the ball.
- - -0.001 existencial penalty.
+ - +1.0000 when the ball enters the goal. Golazo!
+ - +0.0500 when the ball crosses the white line. 
+ - +0.0100 when the player hit the ball.
+ - -0.0001 existencial penalty.
  
  ## Episode Termination
  The episode finishes when the ball gets inside the net, passes the white line or 1000 steps are reached.
  
  ## Starting State
  Both the player and the ball are placed randomly on the field. The goal position is fixed.
+ 
+ ## Completition
+ The environment is considered solved when the reward average over 100 episodes is greater than 0.9.
