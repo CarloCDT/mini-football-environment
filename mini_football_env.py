@@ -3,6 +3,7 @@ from mlagents_envs.base_env import ActionTuple
 from mlagents_envs.side_channel.engine_configuration_channel import EngineConfigurationChannel
 from mlagents_envs.environment import UnityEnvironment
 import numpy as np
+from gym import spaces
 
 class UnityEnvironmentAbstract(ABC):
     @abstractmethod
@@ -18,15 +19,24 @@ class UnityEnvironmentAbstract(ABC):
         pass
 
 class MiniFootballEnv(UnityEnvironmentAbstract):
-    def __init__(self, path='./mini_football_windows/Mini Football Environment.exe'):
+    def __init__(self, path='./mini_football_windows/Mini Football Environment.exe', seed=42):
+
+        # Initialize environment
         self.channel = EngineConfigurationChannel()
-        self.env = UnityEnvironment(path, seed=42, side_channels=[self.channel])
+        self.env = UnityEnvironment(path, seed=seed, side_channels=[self.channel])
         self.state = None
 
         self.env.step()
         self.behavior_name = list(self.env.behavior_specs)[0]
-        
         self.reset()
+
+        # Set Atributtes
+        self.action_space = spaces.Tuple((spaces.Box(low=-1, high=1, shape=(2,)), spaces.Discrete(2)))
+        self.observation_space = spaces.Box(low=-float("inf"), high=float("inf"), shape=(30,))
+        self.reward_range = (-0.1, float("inf"))
+        self.spec = None
+        self.metadata = None
+        self.np_random = seed
 
     def step(self, action):
 
@@ -35,7 +45,12 @@ class MiniFootballEnv(UnityEnvironmentAbstract):
         info = None
         step_reward = 0
 
-        transformed_action = ActionTuple(np.array(action[:2]).reshape(1,2).astype(np.float32), np.array(action[-1]).reshape(1,1).astype(np.float32))
+        if len(action)==3:
+            transformed_action = ActionTuple(np.array(action[:2]).reshape(1,2).astype(np.float32), np.array(action[-1]).reshape(1,1).astype(np.float32))
+        elif len(action)==2 and len(action[0])==2:
+            transformed_action = ActionTuple(np.array(action[0]).reshape(1,2).astype(np.float32), np.array(action[-1]).reshape(1,1).astype(np.float32))
+        else:
+            raise Exception("Invalid Action")
 
         self.env.set_actions(behavior_name=self.behavior_name, action=transformed_action)
         self.env.step()
@@ -52,7 +67,6 @@ class MiniFootballEnv(UnityEnvironmentAbstract):
             
         else:
             observation = []
-            #self.reset()
         
         self.state = observation
 
@@ -61,11 +75,11 @@ class MiniFootballEnv(UnityEnvironmentAbstract):
     def reset(self):
         self.env.reset()
         self.env.step()
-        decision_steps, terminal_steps = self.env.get_steps(self.behavior_name)
+        decision_steps, _ = self.env.get_steps(self.behavior_name)
         self.state = decision_steps.obs[0][0]
 
     def close(self):
-        pass
+        raise NotImplementedError
 
     def set_channel_params(self, width, height, quality_level, time_scale, target_frame_rate, capture_frame_rate):
         self.channel.set_configuration_parameters(
@@ -76,3 +90,6 @@ class MiniFootballEnv(UnityEnvironmentAbstract):
             target_frame_rate= target_frame_rate,
             capture_frame_rate= capture_frame_rate,
             )
+        
+    def render():
+        print("Render is automatically done, unless using headless build.")
