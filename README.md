@@ -1,7 +1,7 @@
 # Mini Football Environment ⚽
 Simple reinforcement learning environment made in Unity:
 
-![Screenshot](img/demo.png)
+![Screenshot](assets/demo.png)
 
 ## Observation Space
 The state consist of the following data points (all 3 dimensional):
@@ -34,3 +34,8 @@ The agent objective is to get the ball into the goal.
  
  ## Completion
  The environment is considered solved when the reward average over 100 episodes is greater than 0.9.
+
+ ## Agent in Action
+ Check an agent that solved mini football:
+
+![gif](assets/sample.gif)
