@@ -19,7 +19,7 @@ class UnityEnvironmentAbstract(ABC):
         pass
 
 class MiniFootballEnv(UnityEnvironmentAbstract):
-    def __init__(self, path='./mini_football_windows/Mini Football Environment.exe', seed=42):
+    def __init__(self, path='./mini_football_windows/Mini Football Environment.exe', seed=0):
 
         # Initialize environment
         self.channel = EngineConfigurationChannel()
@@ -79,7 +79,7 @@ class MiniFootballEnv(UnityEnvironmentAbstract):
         self.state = decision_steps.obs[0][0]
 
     def close(self):
-        raise NotImplementedError
+        self.env.close()
 
     def set_channel_params(self, width, height, quality_level, time_scale, target_frame_rate, capture_frame_rate):
         self.channel.set_configuration_parameters(
